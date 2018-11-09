@@ -56,5 +56,33 @@ public class Server {
 			this.dataOutputStream = dataOutputStream;
 		}
 
+		@Override
+		public void run() {
+			String received;
+			String toreturn;
+
+			while (true) {
+
+				try {
+					
+					// ask the user what he/she wants 
+					
+					// receive the answer from client 
+
+					// creating data object 
+
+					// write on output stream based on the answer of the client 
+
+
+				} catch (Exception e) {
+					//TODO: handle exception
+				}
+
+
+			}
+
+
+		}
+
 	}
 }
