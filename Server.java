@@ -39,9 +39,8 @@ public class Server {
 				e.printStackTrace();
 			}
 		}
+
 	}
-
-
 }
 
 class ClientHandler extends Thread {
@@ -74,8 +73,8 @@ class ClientHandler extends Thread {
 				// receive the answer from client 
 				received = dataInputStream.readUTF();
 
-				// If the client entered the 'enter' button 
-				if (received.equals("Exit")) {
+				// If the client type the 'exit' button 
+				if (received.equals("exit")) {
 					System.out.println("Client " + this.socket + " sends exit...");
 					System.out.println("Closing the connection.");
 					this.socket.close();
@@ -95,9 +94,7 @@ class ClientHandler extends Thread {
 					case "Time":
 						toreturn = fortime.format(date);
 						dataOutputStream.writeUTF(toreturn);
-
 						break;
-				
 					default:
 						dataOutputStream.writeUTF("Invalid input.");
 						break;
