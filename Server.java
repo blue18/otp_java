@@ -7,7 +7,7 @@ import java.net.*;
 
 public class Server {
 	public static void main(String[] args) throws IOException {
-		
+
 		// Server is listening
 		ServerSocket serverSocket = new ServerSocket(5000);
 
@@ -39,7 +39,22 @@ public class Server {
 				e.printStackTrace();
 			}
 		}
+	}
 
-		
+	class ClientHandler extends thread {
+
+		DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd"); 
+		DateFormat fortime = new SimpleDateFormat("hh:mm:ss"); 
+		final DataInputStream dataInputStream; 
+		final DataOutputStream dataOutputStream; 
+		final Socket socket; 
+
+		// constructor 
+		public ClientHandler(Socket socket, DataInputStream dataInputStream, DataOutputStream dataOutputStream) {
+			this.socket = socket;
+			this.dataInputStream = dataInputStream;
+			this.dataOutputStream = dataOutputStream;
+		}
+
 	}
 }
