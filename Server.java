@@ -9,7 +9,7 @@ public class Server {
 	public static void main(String[] args) throws IOException {
 
 		// Server is listening
-		ServerSocket serverSocket = new ServerSocket(5000);
+		ServerSocket serverSocket = new ServerSocket(5056);
 
 		// running infinit loop for getting client request
 		while (true) {
@@ -18,7 +18,7 @@ public class Server {
 
 			try {
 
-				// Socket object to receive incoming client request
+				// socket object to receive incoming client request
 				socket = serverSocket.accept();
 				System.out.println("A new client is connected: " + socket);
 
@@ -41,48 +41,82 @@ public class Server {
 		}
 	}
 
-	class ClientHandler extends thread {
 
-		DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd"); 
-		DateFormat fortime = new SimpleDateFormat("hh:mm:ss"); 
-		final DataInputStream dataInputStream; 
-		final DataOutputStream dataOutputStream; 
-		final Socket socket; 
+}
 
-		// constructor 
-		public ClientHandler(Socket socket, DataInputStream dataInputStream, DataOutputStream dataOutputStream) {
-			this.socket = socket;
-			this.dataInputStream = dataInputStream;
-			this.dataOutputStream = dataOutputStream;
-		}
+class ClientHandler extends Thread {
 
-		@Override
-		public void run() {
-			String received;
-			String toreturn;
+	DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd"); 
+	DateFormat fortime = new SimpleDateFormat("hh:mm:ss"); 
+	final DataInputStream dataInputStream; 
+	final DataOutputStream dataOutputStream; 
+	final Socket socket; 
 
-			while (true) {
+	// constructor 
+	public ClientHandler(Socket socket, DataInputStream dataInputStream, DataOutputStream dataOutputStream) {
+		this.socket = socket;
+		this.dataInputStream = dataInputStream;
+		this.dataOutputStream = dataOutputStream;
+	}
 
-				try {
-					
-					// ask the user what he/she wants 
-					
-					// receive the answer from client 
+	@Override
+	public void run() {
+		String received;
+		String toreturn;
 
-					// creating data object 
+		while (true) {
 
-					// write on output stream based on the answer of the client 
+			try {
+				
+				// ask the user what he/she wants 
+				dataOutputStream.writeUTF("Pick one [Date | Time]" + " Press enter to terminate connection.");
 
+				// receive the answer from client 
+				received = dataInputStream.readUTF();
 
-				} catch (Exception e) {
-					//TODO: handle exception
+				// If the client entered the 'enter' button 
+				if (received.equals("Exit")) {
+					System.out.println("Client " + this.socket + " sends exit...");
+					System.out.println("Closing the connection.");
+					this.socket.close();
+					System.out.println("Connection closed");
+					break;
 				}
 
+				// creating data object 
+				Date date = new Date(); 
 
+				// write on output stream based on the answer of the client 
+				switch (received) {
+					case "Data":
+						toreturn = fordate.format(date);
+						dataOutputStream.writeUTF(toreturn);
+						break;
+					case "Time":
+						toreturn = fortime.format(date);
+						dataOutputStream.writeUTF(toreturn);
+
+						break;
+				
+					default:
+						dataOutputStream.writeUTF("Invalid input.");
+						break;
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 
+		}
 
+		try {
+			// closing resources
+			this.dataInputStream.close();
+			this.dataOutputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}
+
 }
