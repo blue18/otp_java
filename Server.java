@@ -2,7 +2,8 @@
 
 import java.io.*; 
 import java.text.*; 
-import java.util.*; 
+import java.util.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import java.net.*; 
 
 public class Server {
@@ -19,6 +20,7 @@ public class Server {
 			try {
 
 				// socket object to receive incoming client request
+				System.out.println("Server is listening.");
 				socket = serverSocket.accept();
 				System.out.println("A new client is connected: " + socket);
 
@@ -43,6 +45,11 @@ public class Server {
 	}
 }
 
+// Login status
+enum Status {
+	Active, Inactive;
+}
+
 class ClientHandler extends Thread {
 
 	DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd"); 
@@ -62,16 +69,36 @@ class ClientHandler extends Thread {
 	public void run() {
 		String received;
 		String toreturn;
+		String username;
+		String password;
 
 		while (true) {
 
-			try {
+			try {		
+				Status login = Status.Inactive;
 				
 				// ask the user what he/she wants 
-				dataOutputStream.writeUTF("Pick one [Date | Time]" + " Press enter to terminate connection.");
+				dataOutputStream.writeUTF("Enter username: ");
 
 				// receive the answer from client 
-				received = dataInputStream.readUTF();
+				username = dataInputStream.readUTF();
+
+				// check to see if the user is tom and the password is correct.
+				if(username.equals("Tom")) {
+					dataOutputStream.writeUTF("username received.");
+					dataInputStream.reset();
+					password = dataInputStream.readUTF();
+
+					// To hard code the password is bad practice; will fix later.
+					if(password.equals("tomato")) {
+						dataOutputStream.writeUTF("Login Successful.");
+						login = Status.Active;
+					}
+				} else {
+					dataOutputStream.writeUTF("Invalid username.");
+				}
+
+				received = "";
 
 				// If the client type the 'exit' button 
 				if (received.equals("exit")) {
@@ -82,28 +109,32 @@ class ClientHandler extends Thread {
 					break;
 				}
 
-				// creating data object 
-				Date date = new Date(); 
+				if(login.equals(Status.Active)) {
+					dataOutputStream.writeUTF("Enter Data | Time .");
+					received = dataInputStream.readUTF();
 
-				// write on output stream based on the answer of the client 
-				switch (received) {
-					case "Date":
-						toreturn = fordate.format(date);
-						dataOutputStream.writeUTF(toreturn);
-						break;
-					case "Time":
-						toreturn = fortime.format(date);
-						dataOutputStream.writeUTF(toreturn);
-						break;
-					default:
-						dataOutputStream.writeUTF("Invalid input.");
-						break;
+					// creating data object 
+					Date date = new Date(); 
+
+					// write on output stream based on the answer of the client 
+					switch (received) {
+						case "Date":
+							toreturn = fordate.format(date);
+							dataOutputStream.writeUTF(toreturn);
+							break;
+						case "Time":
+							toreturn = fortime.format(date);
+							dataOutputStream.writeUTF(toreturn);
+							break;
+						default:
+							dataOutputStream.writeUTF("Invalid input.");
+							break;
+					}
 				}
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 		}
 
 		try {
