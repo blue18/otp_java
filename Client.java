@@ -17,14 +17,28 @@ public class Client {
             Socket socket = new Socket(ip, 5056);
 
             // obtaining input and output stream 
-            DataInputStream dataInputStream = DataInputStream(socket.getInputStream());
+            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 
-            DataOutputStream dataOutputStream = DataOutputStream(socket.getOutputStream());
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             
             // a loop that creates an exchange of information between client and client handler
             while (true) {
 
+                System.out.println(dataInputStream.readUTF());
+                String tosent = scanner.nextLine();
+                dataOutputStream.writeUTF(tosent);
+
+                // if client sends exit, close this connection and then break from loop. 
+                if (tosent.equals("Exit")) {
+                    System.out.println("Closing this connection: " + socket);
+                    socket.close();
+                    System.out.println("Connection closed.");
+                    break; 
+                }
+
                 // printing date or time as requested by client 
+                String received = dataInputStream.readUTF();
+                System.out.println(received);
 
             }
 

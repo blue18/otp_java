@@ -87,7 +87,7 @@ class ClientHandler extends Thread {
 
 				// write on output stream based on the answer of the client 
 				switch (received) {
-					case "Data":
+					case "Date":
 						toreturn = fordate.format(date);
 						dataOutputStream.writeUTF(toreturn);
 						break;
