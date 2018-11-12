@@ -104,7 +104,7 @@ class ClientHandler extends Thread {
 				// reset user response
 				received = "";
 
-				// Only if the user is login 
+				// Only if the user is logged in 
 				if (login == Status.Active) {
 					if(login.equals(Status.Active)) {
 						dataOutputStream.writeUTF("Enter date | time | encrypt | exit.");
@@ -132,7 +132,7 @@ class ClientHandler extends Thread {
 					}
 				}
 
-				// If the client type the 'exit' button, close the socket and break out of the loop.  
+				// If the client types the 'exit', close the socket and break out of the loop.  
 				if (received.equals("exit")) {
 					System.out.println("Client " + this.socket + " sends exit...");
 					System.out.println("Closing the connection.");
