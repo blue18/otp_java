@@ -71,65 +71,72 @@ class ClientHandler extends Thread {
 		String toreturn;
 		String username;
 		String password;
+		Status login = Status.Inactive;
 
 		while (true) {
 
 			try {		
-				Status login = Status.Inactive;
-				
-				// ask the user what he/she wants 
-				dataOutputStream.writeUTF("Enter username: ");
 
-				// receive the answer from client 
-				username = dataInputStream.readUTF();
+				// If user is not login in, check credentials 
+				if(login == Status.Inactive) {
+					// ask the user what he/she wants 
+					dataOutputStream.writeUTF("Enter username: ");
 
-				// check to see if the user is tom and the password is correct.
-				if(username.equals("Tom")) {
-					dataOutputStream.writeUTF("username received.");
-					dataInputStream.reset();
-					password = dataInputStream.readUTF();
+					// receive the answer from client 
+					username = dataInputStream.readUTF();
 
-					// To hard code the password is bad practice; will fix later.
-					if(password.equals("tomato")) {
-						dataOutputStream.writeUTF("Login Successful.");
-						login = Status.Active;
+					// check to see if the user is tom and the password is correct.
+					if(username.equals("tom")) {
+						dataOutputStream.writeUTF("username received.");
+						dataOutputStream.writeUTF("Enter Password:");
+						password = dataInputStream.readUTF();
+
+						// To hard code the password is bad practice; will fix later.
+						if(password.equals("tomato")) {
+							dataOutputStream.writeUTF("Login Successful.");
+							login = Status.Active;
+						}
+					} else {
+						dataOutputStream.writeUTF("Invalid username.");
 					}
-				} else {
-					dataOutputStream.writeUTF("Invalid username.");
 				}
 
+				// reset user response
 				received = "";
 
-				// If the client type the 'exit' button 
+				// Only if the user is login 
+				if (login == Status.Active) {
+					if(login.equals(Status.Active)) {
+						dataOutputStream.writeUTF("Enter date | time | exit.");
+						received = dataInputStream.readUTF();
+	
+						// creating data object 
+						Date date = new Date(); 
+	
+						// write on output stream based on the answer of the client 
+						switch (received) {
+							case "date":
+								toreturn = fordate.format(date);
+								dataOutputStream.writeUTF(toreturn);
+								break;
+							case "time":
+								toreturn = fortime.format(date);
+								dataOutputStream.writeUTF(toreturn);
+								break;
+							default:
+								dataOutputStream.writeUTF("Invalid input.");
+								break;
+						}
+					}
+				}
+
+				// If the client type the 'exit' button, close the socket and break out of the loop.  
 				if (received.equals("exit")) {
 					System.out.println("Client " + this.socket + " sends exit...");
 					System.out.println("Closing the connection.");
 					this.socket.close();
 					System.out.println("Connection closed");
 					break;
-				}
-
-				if(login.equals(Status.Active)) {
-					dataOutputStream.writeUTF("Enter Data | Time .");
-					received = dataInputStream.readUTF();
-
-					// creating data object 
-					Date date = new Date(); 
-
-					// write on output stream based on the answer of the client 
-					switch (received) {
-						case "Date":
-							toreturn = fordate.format(date);
-							dataOutputStream.writeUTF(toreturn);
-							break;
-						case "Time":
-							toreturn = fortime.format(date);
-							dataOutputStream.writeUTF(toreturn);
-							break;
-						default:
-							dataOutputStream.writeUTF("Invalid input.");
-							break;
-					}
 				}
 
 			} catch (Exception e) {
