@@ -107,7 +107,7 @@ class ClientHandler extends Thread {
 				// Only if the user is login 
 				if (login == Status.Active) {
 					if(login.equals(Status.Active)) {
-						dataOutputStream.writeUTF("Enter date | time | exit.");
+						dataOutputStream.writeUTF("Enter date | time | encrypt | exit.");
 						received = dataInputStream.readUTF();
 	
 						// creating data object 
@@ -122,6 +122,8 @@ class ClientHandler extends Thread {
 							case "time":
 								toreturn = fortime.format(date);
 								dataOutputStream.writeUTF(toreturn);
+								break;
+							case "encrypt":
 								break;
 							default:
 								dataOutputStream.writeUTF("Invalid input.");
