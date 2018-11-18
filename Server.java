@@ -72,6 +72,7 @@ class ClientHandler extends Thread {
 		String username;
 		String password;
 		Status login = Status.Inactive;
+		String message;
 
 		while (true) {
 
@@ -124,6 +125,8 @@ class ClientHandler extends Thread {
 								dataOutputStream.writeUTF(toreturn);
 								break;
 							case "encrypt":
+								dataOutputStream.writeUTF("Enter a message: ");
+								message = dataInputStream.readUTF();
 								break;
 							default:
 								dataOutputStream.writeUTF("Invalid input.");
