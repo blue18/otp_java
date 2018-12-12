@@ -15,15 +15,22 @@ public class Encryption {
     // Description: Encrypts a message using ascii values 
     public ArrayList<Character> encrypt(String message) {
 
+        // Get length of message
         int lengthOfMessage = message.length();
+
+        // Storage for ascii char value 
         char testLetter;
+
+        // Storage for ascii int value
         int ascii;
+
         ArrayList<Integer> presecretMessage = new ArrayList<Integer>(lengthOfMessage);
         ArrayList<Integer> intMessage = new ArrayList<Integer>(lengthOfMessage);
         ArrayList<Character> secretMessage = new ArrayList<Character>(lengthOfMessage);
         ArrayList<Integer> key = new ArrayList<Integer>(lengthOfMessage);
         int sum; 
         Character cipher;
+        int asciiIntForm = 0;
 
 
         for (int i = 0; i < lengthOfMessage; i++) {
@@ -41,10 +48,13 @@ public class Encryption {
         // Use key for encryption 
         key = this.keyGenerator(lengthOfMessage);
 
+        // Print the key
         System.out.println("key: ");
         for (int i =  0; i < key.size(); i++) {
             System.out.print(key.get(i) + " ");
         }
+        System.out.println("");
+
 
         for (int i = 0; i < lengthOfMessage; i++) {
 
@@ -55,13 +65,11 @@ public class Encryption {
             intMessage.add(i, sum/2);
         }
 
-        System.out.println(" ");
-        System.out.println("postsum: ");
-
-        int n = 0;
+        // Change ascii value to ascii char and store 
         for (int i =  0; i < lengthOfMessage; i++) {
-            n = intMessage.get(i);
-            cipher = (char) n;
+            asciiIntForm = intMessage.get(i);
+            cipher = (char) asciiIntForm;
+            secretMessage.add(i, cipher);
             System.out.print(cipher);
         }
         System.out.println("");
@@ -95,14 +103,6 @@ public class Encryption {
         }
 
         return arrayList;
-    }
-
-    public static void main(String[] args) {
-        String message = "how are you";
-        Encryption box = new Encryption(); 
-        System.out.println(message);
-        ArrayList<Character> newMessage = box.encrypt(message);
-
     }
     
 }

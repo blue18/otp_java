@@ -5,6 +5,8 @@ import java.text.*;
 import java.util.*;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import java.net.*; 
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Server {
 	public static void main(String[] args) throws IOException {
@@ -127,6 +129,13 @@ class ClientHandler extends Thread {
 							case "encrypt":
 								dataOutputStream.writeUTF("Enter a message: ");
 								message = dataInputStream.readUTF();
+								dataOutputStream.writeUTF("Message read");
+								ArrayList<Character> secretMessage = new ArrayList<Character>(message.length());
+								Encryption blackbox = new Encryption();
+								dataOutputStream.writeUTF("before encryption");
+								secretMessage = blackbox.encrypt(message);
+								dataOutputStream.writeUTF("after encryption");
+
 								break;
 							default:
 								dataOutputStream.writeUTF("Invalid input.");

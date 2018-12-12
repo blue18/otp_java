@@ -41,6 +41,7 @@ public class Client {
                     // printing date or time as requested by client 
                     String received = dataInputStream.readUTF();
                     System.out.println(received);
+
                 }
             }
 
