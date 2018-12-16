@@ -24,25 +24,41 @@ public class Client {
             // a loop that creates an exchange of information between client and client handler
             while (true) {
 
-                // if socket is not closed, parse data between server and client
-                if (!socket.isClosed()) {
-                    System.out.println(dataInputStream.readUTF());
-                    String tosent = scanner.nextLine();
-                    dataOutputStream.writeUTF(tosent);
-    
-                    // if client sends exit, close this connection and then break from loop. 
-                    if (tosent.equals("exit")) {
-                        System.out.println("Closing this connection: " + socket);
-                        socket.close();
-                        System.out.println("Connection closed.");
-                        break; 
-                    }
-    
-                    // printing date or time as requested by client 
-                    String received = dataInputStream.readUTF();
-                    System.out.println(received);
+                // Print the menu from the server
+                System.out.println(dataInputStream.readUTF());
 
+                // Read user input 
+                String tosent = scanner.nextLine();
+
+                // Send response to server 
+                dataOutputStream.writeUTF(tosent);
+
+                // if client sends exit, close this connection and then break from loop. 
+                if (tosent.equals("exit")) {
+                    System.out.println("Closing this connection: " + socket);
+                    socket.close();
+                    System.out.println("Connection closed.");
+                    break; 
                 }
+
+                // if user entered encrypt, read the message to be encrypted 
+                if(tosent.equals("encrypt")) {
+                    System.out.print("Enter message: ");
+
+                    // read user input 
+                    String message = scanner.nextLine();
+
+                    // Send response to server 
+                    dataOutputStream.writeUTF(message);
+                } else {
+
+                    // get input from server 
+                    String received = dataInputStream.readUTF();
+
+                     // printing date or time as requested by client 
+                    System.out.println("Received: " + received);
+                }
+
             }
 
             // Closing resources

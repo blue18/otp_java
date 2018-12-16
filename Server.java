@@ -13,6 +13,7 @@ public class Server {
 
 		// Server is listening
 		ServerSocket serverSocket = new ServerSocket(5056);
+		String message = "non";
 
 		// running infinit loop for getting client request
 		while (true) {
@@ -42,8 +43,12 @@ public class Server {
 				socket.close();
 				e.printStackTrace();
 			}
-		}
 
+			if(message.equals("anObject")) {
+				serverSocket.close();
+			}
+
+		}
 	}
 }
 
@@ -111,10 +116,13 @@ class ClientHandler extends Thread {
 				if (login == Status.Active) {
 					if(login.equals(Status.Active)) {
 						dataOutputStream.writeUTF("Enter date | time | encrypt | exit.");
+						System.out.println("Waiting for client input.");
 						received = dataInputStream.readUTF();
-	
+
 						// creating data object 
 						Date date = new Date(); 
+
+						System.out.println("Received: " + received);
 	
 						// write on output stream based on the answer of the client 
 						switch (received) {
@@ -127,15 +135,18 @@ class ClientHandler extends Thread {
 								dataOutputStream.writeUTF(toreturn);
 								break;
 							case "encrypt":
-								dataOutputStream.writeUTF("Enter a message: ");
-								message = dataInputStream.readUTF();
-								dataOutputStream.writeUTF("Message read");
-								ArrayList<Character> secretMessage = new ArrayList<Character>(message.length());
-								Encryption blackbox = new Encryption();
-								dataOutputStream.writeUTF("before encryption");
-								secretMessage = blackbox.encrypt(message);
-								dataOutputStream.writeUTF("after encryption");
 
+								// Get message from client
+								System.out.println("readUTF...");
+								message = dataInputStream.readUTF();
+								String finalMessage;
+								Encryption blackbox = new Encryption();
+								
+								// Encrypt message 
+								finalMessage = blackbox.encrypt(message);
+
+								// print message on server console
+								System.out.println(finalMessage);
 								break;
 							default:
 								dataOutputStream.writeUTF("Invalid input.");

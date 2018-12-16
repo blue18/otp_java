@@ -13,7 +13,7 @@ public class Encryption {
     }
 
     // Description: Encrypts a message using ascii values 
-    public ArrayList<Character> encrypt(String message) {
+    String encrypt(String message) {
 
         // Get length of message
         int lengthOfMessage = message.length();
@@ -28,6 +28,8 @@ public class Encryption {
         ArrayList<Integer> intMessage = new ArrayList<Integer>(lengthOfMessage);
         ArrayList<Character> secretMessage = new ArrayList<Character>(lengthOfMessage);
         ArrayList<Integer> key = new ArrayList<Integer>(lengthOfMessage);
+        StringBuilder builder = new StringBuilder();
+        String finalMessage;
         int sum; 
         Character cipher;
         int asciiIntForm = 0;
@@ -48,14 +50,6 @@ public class Encryption {
         // Use key for encryption 
         key = this.keyGenerator(lengthOfMessage);
 
-        // Print the key
-        System.out.println("key: ");
-        for (int i =  0; i < key.size(); i++) {
-            System.out.print(key.get(i) + " ");
-        }
-        System.out.println("");
-
-
         for (int i = 0; i < lengthOfMessage; i++) {
 
             // Add preselected value + key value
@@ -70,11 +64,16 @@ public class Encryption {
             asciiIntForm = intMessage.get(i);
             cipher = (char) asciiIntForm;
             secretMessage.add(i, cipher);
-            System.out.print(cipher);
         }
-        System.out.println("");
 
-        return secretMessage;
+        for(Character x: secretMessage) {
+            builder.append(x);
+        }
+
+        finalMessage = builder.toString();
+
+
+        return finalMessage;
     }
 
     public ArrayList<Integer> keyGenerator(int lengthOfMessage) {
